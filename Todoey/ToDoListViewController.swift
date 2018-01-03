@@ -11,9 +11,15 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     var itemArray = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //checking if there is saved user array and extracting it
+        if let items = UserDefaults.standard.array(forKey: "ToDoListArray") as? [String] {
+            itemArray = items
+        }
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -54,7 +60,13 @@ class ToDoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             //what will happen once the user clicks the add item button on UIalert
             self.itemArray.append(textField.text!)
+            
+            //saving array with appended items to local storage on the phone so upon reload user sees he's added items
+            self.defaults.setValue(self.itemArray, forKey: "ToDoListArray")
+            
+            //reloading the tableview to show added item
             self.tableView.reloadData()
+            
         }
         
         alert.addTextField { (alertTextField) in
